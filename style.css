@@ -1,1 +1,51 @@
-body {  font-family: 'Segoe UI', Arial, sans-serif;  margin: 20px;  background-color: #fef6e4;  color: #333;}h1 {  text-align: center;  color: #d35400;}h2 {  margin-top: 30px;  color: #e67e22;}input, select, button {  padding: 5px;  margin: 5px 0;  font-size: 14px;}button {  background-color: #e67e22;  color: #fff;  border: none;  cursor: pointer;  border-radius: 5px;}button:hover {  background-color: #d35400;}.churrero, .pedido, .mensaje {  border: 1px solid #ccc;  padding: 10px;  margin: 5px 0;  background-color: #fffaf0;  border-radius: 5px;  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);}.pedido {  background-color: #fdf2e9;}.mensaje {  background-color: #fef8f0;}
+body {
+  font-family: Arial, sans-serif;
+  background: #fff8f0;
+  margin: 0;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1, h2 {
+  color: #d35400;
+}
+
+button {
+  background: #ff7a00;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background: #e56b00;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.section {
+  display: none;
+}
+
+.card {
+  background: white;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
