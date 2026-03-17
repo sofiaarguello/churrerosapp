@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -6,9 +7,11 @@
 </head>
 <body>
 
+<div class="container">
+
 <!-- Pantalla de inicio -->
 <div id="inicio">
-  <h1>Bienvenido a la Churrería</h1>
+  <h1>Churrería App</h1>
   <button onclick="mostrarSeccion('comprar')">Quiero comprar</button>
   <button onclick="mostrarSeccion('vender')">Quiero vender</button>
 </div>
@@ -24,7 +27,7 @@
 
   <h3>Crear Pedido</h3>
   <select id="pedidoChurrero"></select>
-  <input type="text" id="pedidoProducto" placeholder="Productos separados por coma">
+  <input type="text" id="pedidoProducto" placeholder="Ej: Churro Chocolate">
   <button onclick="crearPedido()">Crear Pedido</button>
   <button onclick="cancelarPedido()">Cancelar Último Pedido</button>
   <div id="pedidos"></div>
@@ -32,7 +35,7 @@
   <h3>Mensajes</h3>
   <select id="mensajeChurrero"></select>
   <input type="text" id="mensajeTexto" placeholder="Escribe tu mensaje">
-  <button onclick="enviarMensaje()">Enviar Mensaje</button>
+  <button onclick="enviarMensaje()">Enviar</button>
   <div id="mensajes"></div>
 </div>
 
@@ -42,184 +45,199 @@
   <h2>Administrar Productos</h2>
   <select id="productoSelect"></select>
   <input type="number" id="nuevoPrecio" placeholder="Nuevo precio">
-  <button onclick="actualizarPrecio()">Actualizar Precio</button>
+  <button onclick="actualizarPrecio()">Actualizar</button>
   <div id="listaProductos"></div>
 </div>
 
+</div>
+
 <script>
-// Datos iniciales
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [{idUsuario:1, nombre:"Sofía"}];
+// DATOS
 let churreros = JSON.parse(localStorage.getItem('churreros')) || [
   {idChurrero:1, nombreVendedor:"Carlos", tel:"123456", horario:"10:00 - 20:00"},
   {idChurrero:2, nombreVendedor:"Ana", tel:"987654", horario:"11:00 - 21:00"}
 ];
+
 let productos = JSON.parse(localStorage.getItem('productos')) || [
-  {idProducto:1, nombre:"Churro Chocolate", descripcion:"Churro con chocolate", precio:50},
-  {idProducto:2, nombre:"Churro Dulce de Leche", descripcion:"Churro con dulce de leche", precio:60}
+  {idProducto:1, nombre:"Churro Chocolate", precio:50},
+  {idProducto:2, nombre:"Churro Dulce de Leche", precio:60}
 ];
-let mensajes = JSON.parse(localStorage.getItem('mensajes')) || [];
+
 let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+let mensajes = JSON.parse(localStorage.getItem('mensajes')) || [];
 
-// Guardar en localStorage
 function guardarDatos() {
-  localStorage.setItem('usuarios', JSON.stringify(usuarios));
-  localStorage.setItem('churreros', JSON.stringify(churreros));
-  localStorage.setItem('productos', JSON.stringify(productos));
-  localStorage.setItem('mensajes', JSON.stringify(mensajes));
   localStorage.setItem('pedidos', JSON.stringify(pedidos));
+  localStorage.setItem('mensajes', JSON.stringify(mensajes));
+  localStorage.setItem('productos', JSON.stringify(productos));
 }
 
-// Mostrar/ocultar secciones
-function mostrarSeccion(seccion) {
+// SECCIONES
+function mostrarSeccion(sec) {
   document.getElementById('inicio').style.display = 'none';
-  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-  document.getElementById(seccion).style.display = 'block';
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  document.getElementById(sec).style.display = 'block';
 }
+
 function volverInicio() {
-  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
   document.getElementById('inicio').style.display = 'block';
 }
 
-// Mostrar churreros en selects
-function mostrarChurrerosSelect() {
-  let selectPedido = document.getElementById("pedidoChurrero");
-  let selectMensaje = document.getElementById("mensajeChurrero");
-  selectPedido.innerHTML = "";
-  selectMensaje.innerHTML = "";
-  churreros.forEach(c => {
-    let opt1 = document.createElement("option");
-    opt1.value = c.idChurrero;
-    opt1.text = ${c.nombreVendedor} (${c.horario});
-    selectPedido.add(opt1);
+// SELECTS
+function cargarChurreros() {
+  let select1 = document.getElementById("pedidoChurrero");
+  let select2 = document.getElementById("mensajeChurrero");
 
-    let opt2 = document.createElement("option");
-    opt2.value = c.idChurrero;
-    opt2.text = c.nombreVendedor;
-    selectMensaje.add(opt2);
+  select1.innerHTML = "";
+  select2.innerHTML = "";
+
+  churreros.forEach(c => {
+    let o1 = document.createElement("option");
+    o1.value = c.idChurrero;
+    o1.text = `${c.nombreVendedor} (${c.horario})`;
+    select1.add(o1);
+
+    let o2 = document.createElement("option");
+    o2.value = c.idChurrero;
+    o2.text = c.nombreVendedor;
+    select2.add(o2);
   });
 }
 
-// Buscar churreros
+// BUSCAR
 function buscarChurreros() {
   let input = document.getElementById("buscarNombre").value.toLowerCase();
   let lista = document.getElementById("listaChurreros");
   lista.innerHTML = "";
+
   let encontrados = churreros.filter(c => c.nombreVendedor.toLowerCase().includes(input));
+
+  if(encontrados.length === 0){
+    lista.innerHTML = "<p>No se encontraron resultados</p>";
+    return;
+  }
+
   encontrados.forEach(c => {
     let div = document.createElement("div");
-    div.className = "churrero";
-    div.innerHTML = <b>${c.nombreVendedor}</b> - Tel: ${c.tel} - Horario: ${c.horario};
+    div.className = "card";
+    div.innerHTML = `<b>${c.nombreVendedor}</b><br>Tel: ${c.tel}<br>${c.horario}`;
     lista.appendChild(div);
   });
 }
 
-// Crear pedido
+// PEDIDOS
 function crearPedido() {
-  let idChurrero = parseInt(document.getElementById("pedidoChurrero").value);
-  let productosTexto = document.getElementById("pedidoProducto").value.split(",").map(p => p.trim());
-  let listaProductos = productos.filter(prod => productosTexto.includes(prod.nombre));
-  if(listaProductos.length === 0) { alert("No hay productos válidos"); return; }
+  let id = parseInt(document.getElementById("pedidoChurrero").value);
+  let texto = document.getElementById("pedidoProducto").value;
+
+  if(!texto){
+    alert("Ingresá un producto");
+    return;
+  }
+
   let pedido = {
-    idPedido: pedidos.length + 1,
-    idUsuario: 1,
-    idChurrero: idChurrero,
-    listaProductos: listaProductos,
+    id: pedidos.length + 1,
+    idChurrero: id,
+    productos: texto,
     estado: "pendiente"
   };
+
   pedidos.push(pedido);
   guardarDatos();
   mostrarPedidos();
+  alert("Pedido creado");
 }
 
-// Mostrar pedidos
 function mostrarPedidos() {
   let div = document.getElementById("pedidos");
   div.innerHTML = "";
+
   pedidos.forEach(p => {
     let c = churreros.find(ch => ch.idChurrero === p.idChurrero);
-    let divPedido = document.createElement("div");
-    divPedido.className = "pedido";
-    divPedido.innerHTML = <b>Pedido #${p.idPedido}</b> - Churrero: ${c.nombreVendedor} - Estado: ${p.estado} <br> Productos: ${p.listaProductos.map(pr => pr.nombre).join(", ")};
-    div.appendChild(divPedido);
+    div.innerHTML += `<div class="card">Pedido #${p.id} - ${c.nombreVendedor}<br>${p.productos}</div>`;
   });
 }
 
-// Cancelar último pedido
 function cancelarPedido() {
-  if(pedidos.length === 0) return alert("No hay pedidos para cancelar");
-  let pedido = pedidos.pop();
+  if(pedidos.length === 0){
+    alert("No hay pedidos");
+    return;
+  }
+
+  let p = pedidos.pop();
   guardarDatos();
   mostrarPedidos();
-  alert(Pedido #${pedido.idPedido} cancelado);
+  alert(`Pedido #${p.id} cancelado`);
 }
 
-// Enviar mensaje
+// MENSAJES
 function enviarMensaje() {
-  let idChurrero = parseInt(document.getElementById("mensajeChurrero").value);
+  let id = parseInt(document.getElementById("mensajeChurrero").value);
   let texto = document.getElementById("mensajeTexto").value;
-  if(!texto) return;
-  let msg = {
-    idMensaje: mensajes.length + 1,
-    idUsuario: 1,
-    idChurrero: idChurrero,
-    mensaje: texto,
-    fecha: new Date().toLocaleString()
-  };
-  mensajes.push(msg);
+
+  if(!texto){
+    alert("Escribí un mensaje");
+    return;
+  }
+
+  mensajes.push({idChurrero:id, texto:texto});
   guardarDatos();
   mostrarMensajes();
 }
 
-// Mostrar mensajes
 function mostrarMensajes() {
   let div = document.getElementById("mensajes");
   div.innerHTML = "";
+
   mensajes.forEach(m => {
     let c = churreros.find(ch => ch.idChurrero === m.idChurrero);
-    let msgDiv = document.createElement("div");
-    msgDiv.className = "mensaje";
-    msgDiv.innerHTML = <b>${c.nombreVendedor}</b>: ${m.mensaje} <i>(${m.fecha})</i>;
-    div.appendChild(msgDiv);
+    div.innerHTML += `<div class="card"><b>${c.nombreVendedor}</b>: ${m.texto}</div>`;
   });
 }
 
-// Administrar productos
-function mostrarProductos() {
+// PRODUCTOS
+function cargarProductos() {
   let select = document.getElementById("productoSelect");
   let lista = document.getElementById("listaProductos");
+
   select.innerHTML = "";
   lista.innerHTML = "";
-  productos.forEach(p => {
-    let opt = document.createElement("option");
-    opt.value = p.idProducto;
-    opt.text = ${p.nombre} - $${p.precio};
-    select.add(opt);
 
-    let div = document.createElement("div");
-    div.innerHTML = <b>${p.nombre}</b> - ${p.descripcion} - Precio: $${p.precio};
-    lista.appendChild(div);
+  productos.forEach(p => {
+    let o = document.createElement("option");
+    o.value = p.idProducto;
+    o.text = `${p.nombre} - S/${p.precio}`;
+    select.add(o);
+
+    lista.innerHTML += `<div class="card">${p.nombre} - S/${p.precio}</div>`;
   });
 }
 
-// Actualizar precio
 function actualizarPrecio() {
-  let idProd = parseInt(document.getElementById("productoSelect").value);
-  let nuevoPrecio = parseFloat(document.getElementById("nuevoPrecio").value);
-  let prod = productos.find(p => p.idProducto === idProd);
-  if(prod && nuevoPrecio > 0) {
-    prod.precio = nuevoPrecio;
-    guardarDatos();
-    mostrarProductos();
-    alert(Precio de ${prod.nombre} actualizado a $${nuevoPrecio});
+  let id = parseInt(document.getElementById("productoSelect").value);
+  let precio = parseFloat(document.getElementById("nuevoPrecio").value);
+
+  if(precio <= 0){
+    alert("Precio inválido");
+    return;
   }
+
+  let prod = productos.find(p => p.idProducto === id);
+  prod.precio = precio;
+
+  guardarDatos();
+  cargarProductos();
+  alert("Precio actualizado");
 }
 
-// Inicializar app
-mostrarChurrerosSelect();
+// INIT
+cargarChurreros();
 mostrarPedidos();
 mostrarMensajes();
-mostrarProductos();
+cargarProductos();
 
 </script>
+
 </body>
 </html>
