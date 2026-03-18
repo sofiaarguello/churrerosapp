@@ -164,13 +164,22 @@ function cancelarPedido() {
     alert("No hay pedidos");
     return;
   }
+  
+ function actualizarTotal() {
+  let nombre = document.getElementById("pedidoProducto").value;
+  let producto = productos.find(p => p.nombre === nombre);
 
+  let total = producto ? producto.precio : 0;
+
+  document.getElementById("totalPedido").innerText = `Total: S/${total}`;
+}
   let p = pedidos.pop();
   guardarDatos();
   mostrarPedidos();
   alert(`Pedido #${p.id} cancelado`);
 }
-
+actualizarTotal();
+  
 // MENSAJES
 function enviarMensaje() {
   let id = parseInt(document.getElementById("mensajeChurrero").value);
