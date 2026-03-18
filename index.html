@@ -20,8 +20,7 @@
 <div id="comprar" class="section">
   <button onclick="volverInicio()">← Volver</button>
   <h2>Comprar Productos</h2>
-  
-  <input type="number" id="nuevoPrecio" placeholder="Nuevo precio" min="1" step="0.01">
+
   <input type="text" id="buscarNombre" placeholder="Buscar churrero">
   <button onclick="buscarChurreros()">Buscar</button>
   <div id="listaChurreros"></div>
@@ -29,10 +28,11 @@
   <h3>Crear Pedido</h3>
   <select id="pedidoChurrero"></select>
   <select id="pedidoProducto" onchange="actualizarTotal()"></select>
-   <p id="totalPedido">Total: S/0</p>
+  <p id="totalPedido">Total: S/0</p>
+
   <button onclick="crearPedido()">Crear Pedido</button>
   <button onclick="cancelarPedido()">Cancelar Último Pedido</button>
- 
+
   <div id="pedidos"></div>
 
   <h3>Mensajes</h3>
@@ -47,7 +47,7 @@
   <button onclick="volverInicio()">← Volver</button>
   <h2>Administrar Productos</h2>
   <select id="productoSelect"></select>
-  <input type="number" id="nuevoPrecio" placeholder="Nuevo precio">
+  <input type="number" id="nuevoPrecio" placeholder="Nuevo precio" min="1" step="0.01">
   <button onclick="actualizarPrecio()">Actualizar</button>
   <div id="listaProductos"></div>
 </div>
@@ -55,6 +55,7 @@
 </div>
 
 <script>
+
 // DATOS
 let churreros = JSON.parse(localStorage.getItem('churreros')) || [
   {idChurrero:1, nombreVendedor:"Carlos", tel:"123456", horario:"10:00 - 20:00"},
@@ -76,13 +77,6 @@ function guardarDatos() {
 }
 
 // SECCIONES
-  document.getElementById("nuevoPrecio").addEventListener("input", function () {
-  let valor = this.value;
-
-  // Si mete letras, las borra automáticamente
-  this.value = valor.replace(/[^0-9.]/g, '');
-});
-  
 function mostrarSeccion(sec) {
   document.getElementById('inicio').style.display = 'none';
 
@@ -95,10 +89,7 @@ function mostrarSeccion(sec) {
 
   if (seccion) {
     seccion.style.display = 'block';
-
-    setTimeout(() => {
-      seccion.classList.add("fade");
-    }, 10);
+    setTimeout(() => seccion.classList.add("fade"), 10);
   }
 }
 
@@ -108,22 +99,10 @@ function volverInicio() {
     s.classList.remove("fade");
   });
 
-    let inicio = document.getElementById('inicio');
-  inicio.style.display = 'block';
-
-  setTimeout(() => {
-    inicio.classList.add("fade");
-  }, 10);
-}
-}
-
   let inicio = document.getElementById('inicio');
   inicio.style.display = 'block';
 
-  setTimeout(() => {
-    inicio.classList.add("fade");
-  }, 10);
-}
+  setTimeout(() => inicio.classList.add("fade"), 10);
 }
 
 // SELECTS
@@ -153,7 +132,9 @@ function buscarChurreros() {
   let lista = document.getElementById("listaChurreros");
   lista.innerHTML = "";
 
-  let encontrados = churreros.filter(c => c.nombreVendedor.toLowerCase().includes(input));
+  let encontrados = churreros.filter(c => 
+    c.nombreVendedor.toLowerCase().includes(input)
+  );
 
   if(encontrados.length === 0){
     lista.innerHTML = "<p>No se encontraron resultados</p>";
@@ -189,6 +170,8 @@ function crearPedido() {
   guardarDatos();
   mostrarPedidos();
   alert("Pedido creado");
+
+  actualizarTotal();
 }
 
 function mostrarPedidos() {
@@ -197,7 +180,9 @@ function mostrarPedidos() {
 
   pedidos.forEach(p => {
     let c = churreros.find(ch => ch.idChurrero === p.idChurrero);
-    div.innerHTML += `<div class="card">Pedido #${p.id} - ${c.nombreVendedor}<br>${p.productos}</div>`;
+    div.innerHTML += `<div class="card">
+      Pedido #${p.id} - ${c.nombreVendedor}<br>${p.productos}
+    </div>`;
   });
 }
 
@@ -206,14 +191,15 @@ function cancelarPedido() {
     alert("No hay pedidos");
     return;
   }
-  
+
   let p = pedidos.pop();
   guardarDatos();
   mostrarPedidos();
   alert(`Pedido #${p.id} cancelado`);
 }
 
-  function actualizarTotal() {
+// TOTAL
+function actualizarTotal() {
   let nombre = document.getElementById("pedidoProducto").value;
   let producto = productos.find(p => p.nombre === nombre);
 
@@ -221,7 +207,7 @@ function cancelarPedido() {
 
   document.getElementById("totalPedido").innerText = `Total: S/${total}`;
 }
-  
+
 // MENSAJES
 function enviarMensaje() {
   let id = parseInt(document.getElementById("mensajeChurrero").value);
@@ -246,10 +232,9 @@ function mostrarMensajes() {
     div.innerHTML += `<div class="card"><b>${c.nombreVendedor}</b>: ${m.texto}</div>`;
   });
 }
-//actualizarTotal();
-  
+
 // PRODUCTOS
-  function cargarProductosEnPedido() {
+function cargarProductosEnPedido() {
   let select = document.getElementById("pedidoProducto");
   select.innerHTML = "";
 
@@ -260,6 +245,7 @@ function mostrarMensajes() {
     select.add(option);
   });
 }
+
 function cargarProductos() {
   let select = document.getElementById("productoSelect");
   let lista = document.getElementById("listaProductos");
@@ -298,15 +284,23 @@ function actualizarPrecio() {
 
   guardarDatos();
   cargarProductos();
+  cargarProductosEnPedido();
   alert("Precio actualizado");
 }
+
 // INIT
 cargarProductosEnPedido();
 cargarChurreros();
 mostrarPedidos();
 mostrarMensajes();
 cargarProductos();
-  actualizarTotal();
+actualizarTotal();
+
+// VALIDACIÓN INPUT PRECIO
+document.getElementById("nuevoPrecio").addEventListener("input", function () {
+  let valor = this.value;
+  this.value = valor.replace(/[^0-9.]/g, '');
+});
 
 </script>
 
