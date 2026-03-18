@@ -20,16 +20,19 @@
 <div id="comprar" class="section">
   <button onclick="volverInicio()">← Volver</button>
   <h2>Comprar Productos</h2>
-
+  
+  <input type="number" id="nuevoPrecio" placeholder="Nuevo precio" min="1" step="0.01">
   <input type="text" id="buscarNombre" placeholder="Buscar churrero">
   <button onclick="buscarChurreros()">Buscar</button>
   <div id="listaChurreros"></div>
 
   <h3>Crear Pedido</h3>
   <select id="pedidoChurrero"></select>
-  <select id="pedidoProducto"></select>
+  <select id="pedidoProducto" onchange="actualizarTotal()"></select>
+   <p id="totalPedido">Total: S/0</p>
   <button onclick="crearPedido()">Crear Pedido</button>
   <button onclick="cancelarPedido()">Cancelar Último Pedido</button>
+ 
   <div id="pedidos"></div>
 
   <h3>Mensajes</h3>
@@ -73,15 +76,54 @@ function guardarDatos() {
 }
 
 // SECCIONES
+  document.getElementById("nuevoPrecio").addEventListener("input", function () {
+  let valor = this.value;
+
+  // Si mete letras, las borra automáticamente
+  this.value = valor.replace(/[^0-9.]/g, '');
+});
+  
 function mostrarSeccion(sec) {
   document.getElementById('inicio').style.display = 'none';
-  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-  document.getElementById(sec).style.display = 'block';
+
+  document.querySelectorAll('.section').forEach(s => {
+    s.style.display = 'none';
+    s.classList.remove("fade");
+  });
+
+  let seccion = document.getElementById(sec);
+
+  if (seccion) {
+    seccion.style.display = 'block';
+
+    setTimeout(() => {
+      seccion.classList.add("fade");
+    }, 10);
+  }
 }
 
 function volverInicio() {
-  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-  document.getElementById('inicio').style.display = 'block';
+  document.querySelectorAll('.section').forEach(s => {
+    s.style.display = 'none';
+    s.classList.remove("fade");
+  });
+
+    let inicio = document.getElementById('inicio');
+  inicio.style.display = 'block';
+
+  setTimeout(() => {
+    inicio.classList.add("fade");
+  }, 10);
+}
+}
+
+  let inicio = document.getElementById('inicio');
+  inicio.style.display = 'block';
+
+  setTimeout(() => {
+    inicio.classList.add("fade");
+  }, 10);
+}
 }
 
 // SELECTS
@@ -129,10 +171,10 @@ function buscarChurreros() {
 // PEDIDOS
 function crearPedido() {
   let id = parseInt(document.getElementById("pedidoChurrero").value);
-  let texto = document.getElementById("pedidoProducto").value;
+  let productoSeleccionado = document.getElementById("pedidoProducto").value;
 
-  if(!texto){
-    alert("Ingresá un producto");
+  if(!productoSeleccionado){
+    alert("Seleccioná un producto");
     return;
   }
 
@@ -165,7 +207,13 @@ function cancelarPedido() {
     return;
   }
   
- function actualizarTotal() {
+  let p = pedidos.pop();
+  guardarDatos();
+  mostrarPedidos();
+  alert(`Pedido #${p.id} cancelado`);
+}
+
+  function actualizarTotal() {
   let nombre = document.getElementById("pedidoProducto").value;
   let producto = productos.find(p => p.nombre === nombre);
 
@@ -173,22 +221,16 @@ function cancelarPedido() {
 
   document.getElementById("totalPedido").innerText = `Total: S/${total}`;
 }
-  let p = pedidos.pop();
-  guardarDatos();
-  mostrarPedidos();
-  alert(`Pedido #${p.id} cancelado`);
-}
-actualizarTotal();
   
 // MENSAJES
 function enviarMensaje() {
   let id = parseInt(document.getElementById("mensajeChurrero").value);
-  let productoSeleccionado = document.getElementById("pedidoProducto").value;
+  let texto = document.getElementById("mensajeTexto").value;
 
-if(!productoSeleccionado){
-  alert("Seleccioná un producto");
-  return;
-}
+  if(!texto){
+    alert("Escribí un mensaje");
+    return;
+  }
 
   mensajes.push({idChurrero:id, texto:texto});
   guardarDatos();
@@ -204,7 +246,8 @@ function mostrarMensajes() {
     div.innerHTML += `<div class="card"><b>${c.nombreVendedor}</b>: ${m.texto}</div>`;
   });
 }
-
+//actualizarTotal();
+  
 // PRODUCTOS
   function cargarProductosEnPedido() {
   let select = document.getElementById("pedidoProducto");
@@ -236,10 +279,17 @@ function cargarProductos() {
 
 function actualizarPrecio() {
   let id = parseInt(document.getElementById("productoSelect").value);
-  let precio = parseFloat(document.getElementById("nuevoPrecio").value);
+  let input = document.getElementById("nuevoPrecio");
+  let precio = parseFloat(input.value);
 
-  if(precio <= 0){
-    alert("Precio inválido");
+  if (isNaN(precio)) {
+    alert("Ingresá un NÚMERO válido");
+    input.value = "";
+    return;
+  }
+
+  if (precio <= 0) {
+    alert("El precio debe ser mayor a 0");
     return;
   }
 
@@ -250,13 +300,13 @@ function actualizarPrecio() {
   cargarProductos();
   alert("Precio actualizado");
 }
-
 // INIT
 cargarProductosEnPedido();
 cargarChurreros();
 mostrarPedidos();
 mostrarMensajes();
 cargarProductos();
+  actualizarTotal();
 
 </script>
 
