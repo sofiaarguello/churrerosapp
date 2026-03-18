@@ -1,9 +1,10 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #fff8f0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5e6d3; /* beige claro */
   margin: 0;
 }
 
+/* CONTENEDOR */
 .container {
   max-width: 500px;
   margin: auto;
@@ -11,41 +12,73 @@ body {
   text-align: center;
 }
 
-h1, h2 {
-  color: #d35400;
+/* TITULOS */
+h1 {
+  color: #5a3e2b;
+  margin-bottom: 30px;
 }
 
+h2 {
+  color: #5a3e2b;
+}
+
+/* BOTONES GENERALES */
 button {
-  background: #ff7a00;
-  color: white;
+  background: #8b5e3c; /* marrón */
+  color: #fff8f0;
   border: none;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
   cursor: pointer;
   width: 100%;
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
 
+/* HOVER */
 button:hover {
-  background: #e56b00;
+  background: #6f472d;
+  transform: scale(1.03);
 }
 
+/* BOTONES INICIO (más grandes y pro) */
+#inicio button {
+  font-size: 18px;
+  padding: 15px;
+  margin: 10px 0;
+  background: linear-gradient(135deg, #a47148, #6f472d);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* INPUTS */
 input, select {
   width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 8px;
+  border: 1px solid #c8b6a6;
+  background: #fffaf5;
 }
 
+/* SECCIONES */
 .section {
   display: none;
 }
 
+/* CARDS */
 .card {
-  background: white;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: #fffaf5;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+/* TEXTO TOTAL */
+#totalPedido {
+  font-weight: bold;
+  color: #5a3e2b;
+  margin-top: 5px;
 }
