@@ -27,7 +27,7 @@
 
   <h3>Crear Pedido</h3>
   <select id="pedidoChurrero"></select>
-  <input type="text" id="pedidoProducto" placeholder="Ej: Churro Chocolate">
+  <select id="pedidoProducto"></select>
   <button onclick="crearPedido()">Crear Pedido</button>
   <button onclick="cancelarPedido()">Cancelar Último Pedido</button>
   <div id="pedidos"></div>
@@ -139,7 +139,7 @@ function crearPedido() {
   let pedido = {
     id: pedidos.length + 1,
     idChurrero: id,
-    productos: texto,
+    productos: productoSeleccionado,
     estado: "pendiente"
   };
 
@@ -174,12 +174,12 @@ function cancelarPedido() {
 // MENSAJES
 function enviarMensaje() {
   let id = parseInt(document.getElementById("mensajeChurrero").value);
-  let texto = document.getElementById("mensajeTexto").value;
+  let productoSeleccionado = document.getElementById("pedidoProducto").value;
 
-  if(!texto){
-    alert("Escribí un mensaje");
-    return;
-  }
+if(!productoSeleccionado){
+  alert("Seleccioná un producto");
+  return;
+}
 
   mensajes.push({idChurrero:id, texto:texto});
   guardarDatos();
@@ -197,6 +197,17 @@ function mostrarMensajes() {
 }
 
 // PRODUCTOS
+  function cargarProductosEnPedido() {
+  let select = document.getElementById("pedidoProducto");
+  select.innerHTML = "";
+
+  productos.forEach(p => {
+    let option = document.createElement("option");
+    option.value = p.nombre;
+    option.text = `${p.nombre} - S/${p.precio}`;
+    select.add(option);
+  });
+}
 function cargarProductos() {
   let select = document.getElementById("productoSelect");
   let lista = document.getElementById("listaProductos");
@@ -232,6 +243,7 @@ function actualizarPrecio() {
 }
 
 // INIT
+cargarProductosEnPedido();
 cargarChurreros();
 mostrarPedidos();
 mostrarMensajes();
