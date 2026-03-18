@@ -75,7 +75,21 @@ input, select {
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
   text-align: left;
 }
+/* ANIMACIÓN SUAVE */
+.fade {
+  animation: fadeIn 0.4s ease;
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* TEXTO TOTAL */
 #totalPedido {
   font-weight: bold;
