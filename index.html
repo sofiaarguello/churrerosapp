@@ -46,13 +46,21 @@
 <div id="vender" class="section">
   <button onclick="volverInicio()">← Volver</button>
   <h2>Administrar Productos</h2>
+
+  <h3>Agregar producto</h3>
+  <input type="text" id="nuevoNombre" placeholder="Nombre del producto">
+  <input type="number" id="nuevoPrecio" placeholder="Precio" min="1" step="0.01">
+  <button onclick="agregarProducto()">Agregar</button>
+
+  <h3>Editar precio</h3>
   <select id="productoSelect"></select>
-  <input type="number" id="nuevoPrecio" placeholder="Nuevo precio" min="1" step="0.01">
+  <input type="number" id="editarPrecio" placeholder="Nuevo precio" min="1" step="0.01">
   <button onclick="actualizarPrecio()">Actualizar</button>
+
+  <h3>Lista de productos</h3>
   <div id="listaProductos"></div>
 </div>
-
-</div>
+  
 
 <script>
 
@@ -262,20 +270,12 @@ function cargarProductos() {
     lista.innerHTML += `<div class="card">${p.nombre} - S/${p.precio}</div>`;
   });
 }
-
 function actualizarPrecio() {
   let id = parseInt(document.getElementById("productoSelect").value);
-  let input = document.getElementById("nuevoPrecio");
-  let precio = parseFloat(input.value);
+  let precio = parseFloat(document.getElementById("editarPrecio").value);
 
-  if (isNaN(precio)) {
-    alert("Ingresá un NÚMERO válido");
-    input.value = "";
-    return;
-  }
-
-  if (precio <= 0) {
-    alert("El precio debe ser mayor a 0");
+  if (isNaN(precio) || precio <= 0) {
+    alert("Ingresá un precio válido");
     return;
   }
 
@@ -285,7 +285,43 @@ function actualizarPrecio() {
   guardarDatos();
   cargarProductos();
   cargarProductosEnPedido();
+
   alert("Precio actualizado");
+}
+
+  let prod = productos.find(p => p.idProducto === id);
+  prod.precio = precio;
+
+  function agregarProducto() {
+  let nombre = document.getElementById("nuevoNombre").value.trim();
+  let precio = parseFloat(document.getElementById("nuevoPrecio").value);
+
+  if (!nombre) {
+    alert("Ingresá un nombre");
+    return;
+  }
+
+  if (isNaN(precio) || precio <= 0) {
+    alert("Ingresá un precio válido");
+    return;
+  }
+
+  let nuevo = {
+    idProducto: productos.length + 1,
+    nombre: nombre,
+    precio: precio
+  };
+
+  productos.push(nuevo);
+  guardarDatos();
+
+  cargarProductos();
+  cargarProductosEnPedido();
+
+  document.getElementById("nuevoNombre").value = "";
+  document.getElementById("nuevoPrecio").value = "";
+
+  alert("Producto agregado");
 }
 
 // INIT
@@ -297,11 +333,12 @@ cargarProductos();
 actualizarTotal();
 
 // VALIDACIÓN INPUT PRECIO
-document.getElementById("nuevoPrecio").addEventListener("input", function () {
-  let valor = this.value;
-  this.value = valor.replace(/[^0-9.]/g, '');
+document.querySelectorAll("input[type='number']").forEach(input => {
+  input.addEventListener("input", function () {
+    this.value = this.value.replace(/[^0-9.]/g, '');
+  });
 });
-
+  
 </script>
 
 </body>
